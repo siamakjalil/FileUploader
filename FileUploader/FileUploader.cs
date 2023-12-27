@@ -14,9 +14,10 @@ namespace FileUploader
         /// <param name="file">base64 file</param>
         /// <param name="oldFileName">old fileName if exist would be removed</param>
         /// <param name="path">path to upload , example : /images/users </param>
+        /// <param name="fileName"> if fileName is empty method generate new fileName </param>
         /// <param name="maxSize">max size allowed to upload</param>
         /// <returns></returns>
-        public static string Upload(string file, string oldFileName, string path,long maxSize = 0)
+        public static string Upload(string file, string oldFileName, string path,string fileName = "",long maxSize = 0)
         {
             try
             {
@@ -25,7 +26,7 @@ namespace FileUploader
                     return oldFileName;
                 }
                 var extension = file.Split(';')[0].Split('/')[1];
-                var fileName = $"{Guid.NewGuid()}.{extension}";
+                fileName =string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
                 var newFilePath = $"{savePath}/{fileName}";
                 if (file.Contains("data"))
@@ -69,17 +70,18 @@ namespace FileUploader
         /// <param name="extension">file extension </param>
         /// <param name="oldFileName">old fileName if exist would be removed</param>
         /// <param name="path">path to upload , example : /images/users </param>
+        /// <param name="fileName"> if fileName is empty method generate new fileName </param>
         /// <param name="maxSize">max size allowed to upload</param>
         /// <returns></returns>
-        public static string Upload(byte[] file ,string extension, string oldFileName, string path,long maxSize = 0)
+        public static string Upload(byte[] file ,string extension, string oldFileName, string path, string fileName = "", long maxSize = 0)
         {
             try
             {
                 if (file.Length == 0)
                 {
                     return oldFileName;
-                } 
-                var fileName = $"{Guid.NewGuid()}.{extension}";
+                }
+                fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
                 var newFilePath = $"{savePath}/{fileName}";
 
@@ -111,9 +113,10 @@ namespace FileUploader
         /// <param name="file">IFormFile</param>
         /// <param name="oldFileName">old fileName if exist would be removed</param>
         /// <param name="path">path to upload , example : /images/users </param>
+        /// <param name="fileName"> if fileName is empty method generate new fileName </param>
         /// <param name="maxSize">max size allowed to upload</param>
         /// <returns></returns>
-        public static string Upload(IFormFile file, string oldFileName, string path,long maxSize = 0)
+        public static string Upload(IFormFile file, string oldFileName, string path, string fileName = "", long maxSize = 0)
         {
             try
             {
@@ -121,7 +124,7 @@ namespace FileUploader
                 {
                     return oldFileName;
                 }
-                var ex = Path.GetExtension(file.FileName);
+                var extension = Path.GetExtension(file.FileName);
                 if (maxSize != 0)
                 {
                     if (!IsAllowedLength(file.Length, maxSize))
@@ -129,7 +132,7 @@ namespace FileUploader
                         return oldFileName;
                     }
                 }
-                var fileName = $"{Guid.NewGuid()}.{ex}"; 
+                fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
                 var newFilePath = $"{savePath}/{fileName}";
                 using (var fileStream = new FileStream(newFilePath, FileMode.Create))
@@ -146,6 +149,46 @@ namespace FileUploader
             catch (Exception e)
             {
                 return oldFileName;
+            }
+        }
+        /// <summary>
+        /// Delete your file 
+        /// </summary>
+        /// <param name="path">Your file path</param>
+        /// <returns>If is success return empty string else return error</returns>
+        public static string Delete(string path)
+        {
+            try
+            {
+                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}"; 
+                if (File.Exists(deletePath))
+                    File.Delete(deletePath);
+                return "";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        /// <summary>
+        /// Delete your file 
+        /// </summary>
+        /// <param name="path">Your file path</param>
+        /// <param name="fileName">Your file fileName</param>
+        /// <returns>If is success return empty string else return error</returns>
+        public static string Delete(string path,string fileName)
+        {
+            try
+            {
+                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}/{fileName}"; 
+                if (File.Exists(deletePath))
+                    File.Delete(deletePath);
+                return "";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
             }
         }
 
