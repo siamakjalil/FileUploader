@@ -8,15 +8,15 @@ namespace FileUploader.Config
 {
     public static class FileUploaderServicesRegistration
     {
-        public static IServiceCollection ConfigureIdentityServices(this IServiceCollection services,
+        public static IServiceCollection ConfigureFileUploaderServices(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.Configure<BucketConfig>(config =>
                 {
-                    config.AccessKey = configuration["BucketConfig:AccessKey"];
-                    config.BucketName = configuration["BucketConfig:BucketName"];
-                    config.EndPoint = configuration["BucketConfig:EndPoint"];
-                    config.SecretKey = configuration["BucketConfig:SecretKey"];
+                    config.AccessKey = configuration["BucketConfigs:AccessKey"];
+                    config.BucketName = configuration["BucketConfigs:BucketName"];
+                    config.EndPoint = configuration["BucketConfigs:EndPoint"];
+                    config.SecretKey = configuration["BucketConfigs:SecretKey"];
                 }
             );
             services.AddScoped<IAws3Services, Aws3Services>();

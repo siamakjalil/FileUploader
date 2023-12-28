@@ -16,6 +16,10 @@ namespace FileUploader.Repositories
         private readonly string _bucketName;
         private readonly IAmazonS3 _awsS3Client;
 
+        public Aws3Services()
+        {
+            
+        }
         public Aws3Services(string awsAccessKeyId, string awsSecretAccessKey, string endPoint, string bucketName)
         {
             _bucketName = bucketName;

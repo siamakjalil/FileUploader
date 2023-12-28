@@ -51,7 +51,7 @@ In the "Config" folder and FileUploaderServicesRegistration we have BucketConfig
 ```
 Add this config to your program.cs 
 ```
-builder.Services.FileUploaderServicesRegistration(builder.Configuration);
+builder.Services.ConfigureFileUploaderServices(builder.Configuration);
 ```
 methods:
 ```
