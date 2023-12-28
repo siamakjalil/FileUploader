@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FileUploader.Models
+﻿namespace FileUploader.Models
 {
     public class BucketConfig
     {
