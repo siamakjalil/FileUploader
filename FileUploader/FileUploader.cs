@@ -17,7 +17,7 @@ namespace FileUploader
         /// <param name="fileName"> if fileName is empty method generate new fileName </param>
         /// <param name="maxSize">max size allowed to upload</param>
         /// <returns></returns>
-        public static string Upload(string file, string oldFileName, string path,string fileName = "",long maxSize = 0)
+        public static string Upload(string file, string oldFileName, string path, string fileName = "", long maxSize = 0)
         {
             try
             {
@@ -26,8 +26,9 @@ namespace FileUploader
                     return oldFileName;
                 }
                 var extension = file.Split(';')[0].Split('/')[1];
-                fileName =string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
+                fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
+                FileDirectory.CheckExistsAndCreate(savePath);
                 var newFilePath = $"{savePath}/{fileName}";
                 if (file.Contains("data"))
                 {
@@ -41,7 +42,7 @@ namespace FileUploader
 
                 var fileByte = Convert.FromBase64String(file);
 
-                if (maxSize!=0)
+                if (maxSize != 0)
                 {
                     if (!IsAllowedLength(fileByte.Length, maxSize))
                     {
@@ -73,7 +74,7 @@ namespace FileUploader
         /// <param name="fileName"> if fileName is empty method generate new fileName </param>
         /// <param name="maxSize">max size allowed to upload</param>
         /// <returns></returns>
-        public static string Upload(byte[] file ,string extension, string oldFileName, string path, string fileName = "", long maxSize = 0)
+        public static string Upload(byte[] file, string extension, string oldFileName, string path, string fileName = "", long maxSize = 0)
         {
             try
             {
@@ -83,6 +84,7 @@ namespace FileUploader
                 }
                 fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
+                FileDirectory.CheckExistsAndCreate(savePath);
                 var newFilePath = $"{savePath}/{fileName}";
 
                 if (maxSize != 0)
@@ -134,6 +136,7 @@ namespace FileUploader
                 }
                 fileName = string.IsNullOrEmpty(fileName) ? $"{Guid.NewGuid()}.{extension}" : fileName;
                 var savePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
+                FileDirectory.CheckExistsAndCreate(savePath);
                 var newFilePath = $"{savePath}/{fileName}";
                 using (var fileStream = new FileStream(newFilePath, FileMode.Create))
                 {
@@ -160,7 +163,7 @@ namespace FileUploader
         {
             try
             {
-                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}"; 
+                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}";
                 if (File.Exists(deletePath))
                     File.Delete(deletePath);
                 return "";
@@ -177,11 +180,11 @@ namespace FileUploader
         /// <param name="path">Your file path</param>
         /// <param name="fileName">Your file fileName</param>
         /// <returns>If is success return empty string else return error</returns>
-        public static string Delete(string path,string fileName)
+        public static string Delete(string path, string fileName)
         {
             try
             {
-                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}/{fileName}"; 
+                var deletePath = $"{Directory.GetCurrentDirectory()}/wwwroot{path}/{fileName}";
                 if (File.Exists(deletePath))
                     File.Delete(deletePath);
                 return "";
@@ -192,7 +195,7 @@ namespace FileUploader
             }
         }
 
-        private static bool IsAllowedLength(long len , long allowed)
+        private static bool IsAllowedLength(long len, long allowed)
         {
             var mb = (len / 1024f) / 1024f;
             return mb <= allowed;
