@@ -11,6 +11,7 @@ namespace FileUploader.Contracts
 
         Task<PutObjectResponse> UploadFileAsync(AddFile input);
         Task<PutObjectResponse> UploadBas64Async(AddFile input);
+        Task<PutObjectResponse> UploadBas64SHA256Async(AddFile input);
         Task<PutObjectResponse> UploadByteAsync(AddFile input);
 
         Task<DeleteObjectResponse> DeleteFileAsync(string fileName, string versionId = "");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
@@ -100,6 +101,28 @@ namespace FileUploader.Repositories
             var response = await _awsS3Client.PutObjectAsync(request);
             return response;
         }
+
+        public async Task<PutObjectResponse> UploadBas64SHA256Async(AddFile input)
+        {
+            if (string.IsNullOrEmpty(input.File)) return null;
+            var bytes = Convert.FromBase64String(input.File);
+            string sha256Hash;
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+                sha256Hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            }
+            var request = new PutObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = $"{input.Key}",
+                CannedACL = S3CannedACL.PublicRead,
+            };
+            request.Headers["x-amz-content-sha256"] = sha256Hash;
+            var response = await _awsS3Client.PutObjectAsync(request);
+            return response;
+        }
+
         public async Task<PutObjectResponse> UploadByteAsync(AddFile input)
         {
             var request = new PutObjectRequest
